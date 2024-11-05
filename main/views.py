@@ -56,19 +56,28 @@ def chat(request):
         try:
             output = agent_executor.invoke({
                 'input': prompt_template.format(q=question),
+                'handle_parsing_errors': True  # Mantendo o tratamento de erros
             })
 
+            # Obtendo a resposta
             response = output.get('output', 'Desculpe, não consegui encontrar uma resposta para sua pergunta.')
+
+            # Filtrando a resposta
+            start_str = "Os procedimentos operacionais padrão registrados no banco de dados são os seguintes:"
+            start_index = response.find(start_str)
+
+            if start_index != -1:  # Verifica se a string de início foi encontrada
+                response = response[start_index:].strip()  # Extrai a parte relevante e remove espaços
+
         except OutputParserException as e:
-            # Capture the specific exception and return a message
             response = f'Ocorreu um erro ao processar sua pergunta: {str(e)}'
         except Exception as e:
-            # Capture any other exception and return a generic error message
             response = f'Ocorreu um erro inesperado: {str(e)}'
 
         return JsonResponse({'response': response})
 
     return render(request, 'main/chat.html')
+
 
 
 @login_required
