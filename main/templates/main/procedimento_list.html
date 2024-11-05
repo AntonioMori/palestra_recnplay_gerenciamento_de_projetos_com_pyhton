@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Procedimentos{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="my-4">Lista de Procedimentos</h1>
+        <a class="btn btn-primary mb-3" href="{% url 'procedimento_create' %}">Novo Procedimento</a>
+        <ul class="list-group">
+            {% for procedimento in procedimentos %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                    <strong>{{ procedimento.nome }}</strong>
+                        <a class="btn btn-warning btn-sm" href="{% url 'procedimento_update' procedimento.pk %}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger btn-sm" href="{% url 'procedimento_delete' procedimento.pk %}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

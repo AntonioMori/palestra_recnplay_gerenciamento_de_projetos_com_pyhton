@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Procedimentos Operacionais{% endblock %}
+
+{% block content %}
+<div id="chat-container">
+    <h2>Chat - Procedimentos Operacionais</h2>
+    <div id="chat-box"></div>
+    <div class="input-container">
+        <input type="text" id="question-input" placeholder="Digite sua pergunta">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+{% endblock %}
