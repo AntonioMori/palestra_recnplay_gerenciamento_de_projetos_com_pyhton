@@ -5,26 +5,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Minha Aplicação{% endblock %}</title>
+    <title>{% block title %}Sistema de POP's{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <header>
-        <h1>Minha Aplicação</h1>
-        <p>Uma descrição da aplicação para informar os usuários.</p>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Sistema de POP's</h1>
+        <p>Utilizando o langchain e o Django.</p>
     </header>
 
-    <div style="display: flex; flex-grow: 1;">
-        <div class="sidebar">
-            <h2>Menu</h2>
+    <div class="d-flex" style="min-height: calc(100vh - 100px);">
+        <!-- Sidebar -->
+        <div class="sidebar bg-light border-right" style="width: 250px;">
+            <h2 class="h5 text-center">Menu</h2>
             {% if user.is_authenticated %}
-                <p>Bem-vindo, {{ user.username }}!</p>
-                <a href="#">Logout</a>
+                <p class="text-center">Bem-vindo, {{ user.username }}!</p>
+                <a href="#" class="btn btn-danger btn-sm btn-block">Logout</a>
             {% else %}
-                <a href="#">Login</a>
+                <a href="#" class="btn btn-primary btn-sm btn-block">Login</a>
             {% endif %}
-            <a href="{% url 'chat_page' %}">Chat</a>
+            <a href="{% url 'chat_page' %}" class="btn btn-primary btn-sm btn-block">Chat</a>
             
             <!-- Dropdown para o CRUD -->
             <div class="dropdown">
@@ -34,9 +36,10 @@
                     <a href="{% url 'procedimento_create' %}">Novo Procedimento</a>
                 </div>
             </div>
+            
         </div>
-        
-        <div class="content">
+
+        <div class="content flex-grow-1 p-4">
             {% block content %}
             <!-- Conteúdo das páginas aqui -->
             {% endblock %}
@@ -47,6 +50,10 @@
         <p>&copy; 2024 Minha Aplicação. Todos os direitos reservados.</p>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
