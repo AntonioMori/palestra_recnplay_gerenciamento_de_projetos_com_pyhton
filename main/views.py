@@ -14,6 +14,8 @@ from langchain.prompts import PromptTemplate
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain_community.utilities.sql_database import SQLDatabase
 from decouple import config
+from langchain_core.exceptions import OutputParserException
+
 
 # Configura a chave de API
 os.environ['OPENAI_API_KEY'] = config('OPENAI_API_KEY')
@@ -48,14 +50,22 @@ def chat(request):
         data = json.loads(request.body)
         question = data.get('question', '')
 
-        output = agent_executor.invoke({
-            'input': prompt_template.format(q=question),
-        })
+        try:
+            output = agent_executor.invoke({
+                'input': prompt_template.format(q=question),
+            })
 
-        response = output.get('output', 'Desculpe, não consegui encontrar uma resposta para sua pergunta.')
+            response = output.get('output', 'Desculpe, não consegui encontrar uma resposta para sua pergunta.')
+        except OutputParserException as e:
+            # Capture the specific exception and return a message
+            response = f'Ocorreu um erro ao processar sua pergunta: {str(e)}'
+        except Exception as e:
+            # Capture any other exception and return a generic error message
+            response = f'Ocorreu um erro inesperado: {str(e)}'
+
         return JsonResponse({'response': response})
 
-    return render(request, 'main/chat.html') 
+    return render(request, 'main/chat.html')
 
 
 def procedimento_list(request):

@@ -23,7 +23,7 @@ async function sendMessage() {
         addMessage(data.response, 'bot');
     } catch (error) {
         console.error('Error:', error);
-        addMessage('Ocorreu um erro ao enviar a pergunta.', 'bot');
+        addMessage('Não consegui processar. Tente novamente!', 'bot');
     }
 }
 

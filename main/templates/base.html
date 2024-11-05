@@ -11,22 +11,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-3">
-        <h1>Sistema de POP's</h1>
-        <p>Utilizando o langchain e o Django.</p>
-    </header>
 
-    <div class="d-flex" style="min-height: calc(100vh - 100px);">
+
+    <div class="d-flex">
         <!-- Sidebar -->
-        <div class="sidebar bg-light border-right" style="width: 250px;">
-            <h2 class="h5 text-center">Menu</h2>
+        <div class="sidebar">
+            <h2>Menu</h2>
             {% if user.is_authenticated %}
                 <p class="text-center">Bem-vindo, {{ user.username }}!</p>
-                <a href="#" class="btn btn-danger btn-sm btn-block">Logout</a>
-            {% else %}
-                <a href="#" class="btn btn-primary btn-sm btn-block">Login</a>
             {% endif %}
-            <a href="{% url 'chat_page' %}" class="btn btn-primary btn-sm btn-block">Chat</a>
+            
+            <a href="{% url 'chat_page' %}" class="btn btn-primary btn-sm btn-block">CHAT</a>
             
             <!-- Dropdown para o CRUD -->
             <div class="dropdown">
@@ -37,17 +32,37 @@
                 </div>
             </div>
             
+            {% if user.is_authenticated %}
+                <!-- Contêiner para posicionar o botão de logout no fim -->
+                <div class="logout-container">
+                    <a href="#" class="btn btn-danger btn-sm btn-block">Logout</a>
+                </div>
+            {% else %}
+                <a href="#" class="btn btn-primary btn-sm btn-block">Login</a>
+            {% endif %}
         </div>
+        
 
-        <div class="content flex-grow-1 p-4">
+        <div class="content">
             {% block content %}
-            <!-- Conteúdo das páginas aqui -->
+            <div id="chat-container">
+                <h3>Chat - Procedimentos Operacionais</h3>
+                <div id="chat-box">
+                    <!-- Mensagens do chat serão adicionadas aqui -->
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Digite sua mensagem..." />
+                    <button>Enviar</button>
+                </div>
+            </div>
             {% endblock %}
         </div>
+        
+        
     </div>
 
     <footer>
-        <p>&copy; 2024 Minha Aplicação. Todos os direitos reservados.</p>
+        <p>&copy; 2024 POP'S. Todos os direitos reservados.</p>
     </footer>
 
     <!-- Scripts -->
