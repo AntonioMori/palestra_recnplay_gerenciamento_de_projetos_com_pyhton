@@ -35,12 +35,12 @@
             {% if user.is_authenticated %}
             <!-- Contêiner para posicionar o botão de logout no fim -->
             <div class="logout-container">
-                <a href="#" class="btn btn-danger btn-sm btn-block">
+                <a href="{% url 'logout' %}" class="btn btn-danger btn-sm btn-block">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
             {% else %}
-                <a href="#" class="btn btn-primary btn-sm btn-block">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-sm btn-block">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
             {% endif %}

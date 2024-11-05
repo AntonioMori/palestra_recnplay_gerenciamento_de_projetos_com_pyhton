@@ -5,6 +5,8 @@ import json
 import os
 from .forms import ProcedimentoForm
 from .models import Procedimento
+from django.contrib.auth.decorators import login_required
+
 
 # Importações do LangChain
 from langchain_openai import ChatOpenAI
@@ -39,11 +41,12 @@ Perguntas: {q}
 prompt_template = PromptTemplate.from_template(prompt)
 
 # Funções de visualização
-
+@login_required
 @csrf_exempt
 def index(request):
     return render(request, 'main/chat.html')
 
+@login_required
 @csrf_exempt
 def chat(request):
     if request.method == 'POST':
@@ -68,10 +71,12 @@ def chat(request):
     return render(request, 'main/chat.html')
 
 
+@login_required
 def procedimento_list(request):
     procedimentos = Procedimento.objects.all()
     return render(request, 'main/procedimento_list.html', {'procedimentos': procedimentos})
 
+@login_required
 def procedimento_create(request):
     if request.method == "POST":
         form = ProcedimentoForm(request.POST)
@@ -82,6 +87,7 @@ def procedimento_create(request):
         form = ProcedimentoForm()
     return render(request, 'main/procedimento_form.html', {'form': form})
 
+@login_required
 def procedimento_update(request, pk):
     procedimento = get_object_or_404(Procedimento, pk=pk)
     if request.method == "POST":
@@ -93,6 +99,8 @@ def procedimento_update(request, pk):
         form = ProcedimentoForm(instance=procedimento)
     return render(request, 'main/procedimento_form.html', {'form': form})
 
+
+@login_required
 def procedimento_delete(request, pk):
     procedimento = get_object_or_404(Procedimento, pk=pk)
     if request.method == "POST":
