@@ -159,16 +159,19 @@ footer {
     word-wrap: break-word;
 }
 
+
+
+
 .user {
-    background-color: #666768;
-    color: #f8f5f5;
+    background-color: #f8f5f5;
+    color: #666768;
     align-self: flex-start;
     font-size: large;
 }
 
 .bot {
-    background-color: #666768;
-    color: #f8f5f5;
+    background-color: #f8f5f5;
+    color: #666768;
     align-self: flex-end;
     font-size: large;
 }
