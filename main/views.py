@@ -7,7 +7,6 @@ from .forms import ProcedimentoForm
 from .models import Procedimento
 from django.contrib.auth.decorators import login_required
 
-
 # Importações do LangChain
 from langchain_openai import ChatOpenAI
 from langchain import hub
@@ -18,7 +17,6 @@ from langchain_community.utilities.sql_database import SQLDatabase
 from decouple import config
 from langchain_core.exceptions import OutputParserException
 
-
 # Configura a chave de API
 os.environ['OPENAI_API_KEY'] = config('OPENAI_API_KEY')
 
@@ -28,23 +26,24 @@ db = SQLDatabase.from_uri('sqlite:///pop_database.db')
 toolkit = SQLDatabaseToolkit(db=db, llm=model)
 system_message = hub.pull('hwchase17/react')
 agent = create_react_agent(llm=model, tools=toolkit.get_tools(), prompt=system_message)
-agent_executor = AgentExecutor(agent=agent, tools=toolkit.get_tools(), verbose=True)
+agent_executor = AgentExecutor(agent=agent, tools=toolkit.get_tools(), handle_parsing_errors=False, verbose=True)
 
 # Prompt para o agente
 prompt = '''
-Você é um analista de processos e sempre irá tomar como base os procedimentos cadastrados no banco de dados,
-para isso use as ferramentas necessárias para responder as perguntas relacionadas aos procedimentos padrões operacionais da empresa,
-caso não tenha as informações no banco de dados, informe ao usuário que ainda não tem o procedimento criado na base de dados.
-E sempre responda as perguntas passo a passo em português do Brasil.
-Perguntas: {q}
+Você é um analista de processos e sempre irá tomar como base os procedimentos cadastrados no banco de dados.
+Para isso, use as ferramentas necessárias para responder perguntas relacionadas aos procedimentos padrões operacionais da empresa.
+Caso não tenha as informações no banco de dados, informe ao usuário que o procedimento ainda não foi criado.
+Sempre responda as perguntas passo a passo em português do Brasil.
+Pergunta: {q}
 '''
 prompt_template = PromptTemplate.from_template(prompt)
 
-# Funções de visualização
 @login_required
 @csrf_exempt
 def index(request):
     return render(request, 'main/chat.html')
+
+
 
 @login_required
 @csrf_exempt
@@ -54,29 +53,34 @@ def chat(request):
         question = data.get('question', '')
 
         try:
+            # Executa o agente com o template configurado
             output = agent_executor.invoke({
                 'input': prompt_template.format(q=question),
-                'handle_parsing_errors': True  # Mantendo o tratamento de erros
             })
 
-            # Obtendo a resposta
+            # Extrai a resposta ou mostra uma mensagem padrão
             response = output.get('output', 'Desculpe, não consegui encontrar uma resposta para sua pergunta.')
-
-            # Filtrando a resposta
-            start_str = "Os procedimentos operacionais padrão registrados no banco de dados são os seguintes:"
-            start_index = response.find(start_str)
-
-            if start_index != -1:  # Verifica se a string de início foi encontrada
-                response = response[start_index:].strip()  # Extrai a parte relevante e remove espaços
-
         except OutputParserException as e:
-            response = f'Ocorreu um erro ao processar sua pergunta: {str(e)}'
+            # Extrai o conteúdo após "Could not parse LLM output: "
+            error_message = str(e)
+            start_index = error_message.find("Could not parse LLM output: ") + len("Could not parse LLM output: ")
+            response = error_message[start_index:].strip() or 'Ocorreu um erro ao processar sua pergunta.'
+            print(f"Erro de parsing ao processar a pergunta: {response}")  # Log do erro
         except Exception as e:
-            response = f'Ocorreu um erro inesperado: {str(e)}'
+            # Captura outros erros
+                    
+            error_message = str(e)
+            start_index = error_message.find("Could not parse LLM output: ") + len("Could not parse LLM output: ")
+            response = error_message[start_index:].strip() or 'Ocorreu um erro ao processar sua pergunta.'
+            print(f"Erro inesperado: {str(e)}")  # Log do erro
 
         return JsonResponse({'response': response})
 
     return render(request, 'main/chat.html')
+
+
+
+
 
 
 
@@ -107,7 +111,6 @@ def procedimento_update(request, pk):
     else:
         form = ProcedimentoForm(instance=procedimento)
     return render(request, 'main/procedimento_form.html', {'form': form})
-
 
 @login_required
 def procedimento_delete(request, pk):
