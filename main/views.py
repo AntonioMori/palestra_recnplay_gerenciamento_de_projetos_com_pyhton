@@ -1,3 +1,5 @@
+
+# Importações Django
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +19,7 @@ from langchain_community.utilities.sql_database import SQLDatabase
 from decouple import config
 from langchain_core.exceptions import OutputParserException
 
-# Configura a chave de API
+# Configurar a chave de API
 os.environ['OPENAI_API_KEY'] = config('OPENAI_API_KEY')
 
 # Configura o modelo, banco de dados e agente
@@ -37,6 +39,10 @@ Sempre responda as perguntas passo a passo em português do Brasil.
 Pergunta: {q}
 '''
 prompt_template = PromptTemplate.from_template(prompt)
+
+
+
+
 
 @login_required
 @csrf_exempt
@@ -81,7 +87,7 @@ def chat(request):
 
 
 
-
+# CRUD DJANGO
 
 
 @login_required

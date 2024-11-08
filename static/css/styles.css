@@ -12,6 +12,7 @@ body {
 
 
 /* Sidebar */
+/* Barra lateral */
 .sidebar {
     width: 250px;
     background-color: #3a3a3a;
@@ -55,13 +56,14 @@ body {
 
 /* Conteúdo principal */
 .content {
-    margin-left: 200px; /* Espaço para a sidebar */
     display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
+    justify-content: center;
+    align-items: center;
     height: 100vh;
+    width: calc(100vw - 250px); /* Subtrai a largura da sidebar */
     background-color: #aaabac;
-    width: 1932px;
+    box-sizing: border-box;
+    margin-left: 250px; /* Espaço equivalente à largura da sidebar */
 }
 
 /* Footer fixo */
